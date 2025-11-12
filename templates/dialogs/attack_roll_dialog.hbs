@@ -1,0 +1,47 @@
+<form class="custom-dialog">
+  <input type="hidden" name="itemid" value="{{itemId}}" />
+  <input
+      type="hidden"
+      name="rollLabel"
+      value="{{label}}"
+      data-dtype="String"
+    />
+  <div class="form-group">
+    <label class="resource-label">{{label}}:</label>
+    <input
+      type="text"
+      name="rollFormula"
+      value="{{rollFormula}}"
+      data-dtype="String"
+    />
+  </div>
+  <div class="form-group">
+    <label class="resource-label">DR:</label>
+    <input
+      type="text"
+      name="rollDRFormula"
+      value="{{rollDRFormula}}"
+      data-dtype="String"
+    />
+  </div>
+  <div class="form-group">
+    <label class="resource-label">Damage:</label>
+    <input
+      type="text"
+      name="rollDamageFormula"
+      placeholder="D4"
+      value="{{rollDamageFormula}}"
+      data-dtype="String"
+    />
+  </div>
+  <div class="form-group">
+    <label class="resource-label">Armor:</label>
+    <input
+      type="text"
+      name="rollArmorFormula"
+      placeholder="D2"
+      value="{{rollArmorFormula}}"
+      data-dtype="String"
+    />
+  </div>
+</form>

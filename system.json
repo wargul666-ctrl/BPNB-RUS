@@ -1,0 +1,70 @@
+{
+  "id": "bpnb-borg-ru",
+  "title": "Черный порох & Сера (RU)",
+  "description": "Русская локализация BPnB",
+  "authors": [
+    {
+      "name": "NoNaMe",
+      "discord": "NoNaMe"
+    }
+  ],
+  "url": "https://",
+  "license": "LICENSE.txt",
+  "readme": "README.md",
+  "bugs": "https://",
+  "changelog": "CHANGELOG.md",
+  "media": [
+    {
+      "type": "setup",
+      "url": "systems/bpnb-borg-ru/assets/screen.png",
+      "thumbnail": "systems/bpnb-borg-ru/assets/screen.png"
+    }
+  ],
+  "version": "0.8.1",
+  "compatibility": {
+    "minimum": 13,
+    "verified": "13.341"
+  },
+  "esmodules": [
+  "module/bpnb_borg-ru.mjs"
+],
+  "styles": [
+    "css/bpnb_borg.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "ru",
+      "name": "Русский",
+      "path": "lang/ru.json"
+    }
+  ],
+  "packs": [],
+  "packFolders": [],
+  "socket": false,
+  "manifest": "null",
+  "download": "null",
+  "background": "systems/bpnb-borg-ru/assets/screen.png",
+  "gridDistance": 5,
+  "gridUnits": "ft",
+  "primaryTokenAttribute": "health",
+  "secondaryTokenAttribute": "power",
+
+  "template": {
+    "actor": {
+      "character": "systems/bpnb-borg-ru/templates/actor/actor-character-sheet.hbs",
+      "npc": "systems/bpnb-borg-ru/templates/actor/actor-npc-sheet.hbs"
+    },
+    "item": {
+      "weapon": "systems/bpnb-borg-ru/templates/item/item-weapon-sheet.hbs",
+      "armour": "systems/bpnb-borg-ru/templates/item/item-armour-sheet.hbs",
+      "item": "systems/bpnb-borg-ru/templates/item/item-item-sheet.hbs",
+      "feature": "systems/bpnb-borg-ru/templates/item/item-feature-sheet.hbs",
+      "spell": "systems/bpnb-borg-ru/templates/item/item-spell-sheet.hbs"
+    }
+  }
+}
