@@ -9,8 +9,13 @@
     "AddTemporary": "Добавить временный эффект",
     "AddPassive": "Добавить пассивный эффект",
     "Source": "Источник",
-    "Toggle": "Вкл/Выкл эффект"
+    "Toggle": "Вкл/Выкл эффект",
+    "Create": "Эффект"
   },
+  "Active Effects": "Активные эффекты",
+  "Passive Effects": "Пассивные эффекты",
+  "Temporary Effects": "Временные эффекты",
+
   "BPNB_BORG": {
     "Name": "Название",
     "DefendDR": "СЛ",
