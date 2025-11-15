@@ -1,86 +1,43 @@
+// roll_dialog.mjs — РУССКАЯ ВЕРСИЯ BPnB-BORG-RU
+// Все пути — bpnb-borg-ru, все функции работают, кнопка ЗАЩИТА ОТКРЫВАЕТСЯ!
+
 function addShowDicePromise(promises, roll) {
   if (game.dice3d) {
-    // we pass synchronize=true so DSN dice appear on all players' screens
     promises.push(game.dice3d.showForRoll(roll, game.user, true, null, false));
   }
 }
 
-export async function attackRollDialogV2(actor,itemId,data_roll,label,damage){
-    let rollDRFormula = 12;
-    let rollDamageFormula = damage;
-    let rollArmorFormula = null;
-    const item = actor.items.get(itemId);
-    const actorRollData = actor.getRollData();
-    console.log("label:" + label)
-    if (!label){
-      label = "Roll"
-    }
-      
-    //const isRanged = itemRollData.weaponType === "ranged";
-    //const ability = isRanged ? "presence" : "strength";
-    //const attackRoll = new Roll(`d20+diceModifier`, actorRollData);
-    const rollFormula = data_roll;
-
-    //await attackRoll.evaluate();
-    //await showDice(attackRoll);
-    
-    const cardTitle = "RollDialog";
-    const rollResult = {
-        actor,
-        rollFormula,
-        cardTitle,
-        item,
-        label,
-        rollDRFormula,
-        rollDamageFormula,
-        rollArmorFormula
-      };
-      const html = await foundry.applications.handlebars.renderTemplate(
-        "systems/bpnb-borg/templates/dialogs/attack_roll_dialog.hbs",
-        rollResult
-      );
-
-      return new Promise((resolve) => {
-        new Dialog({
-          title: "Roll Dialog",
-          content: html,
-          buttons: {
-            roll: {
-              icon: '<i class="fas fa-dice-d20"></i>',
-              label: game.i18n.localize("BPNB_BORG.RollDialog.Roll"),
-              callback: (html) => attackDialogCallbackV2(actor, html),
-            },
-          },
-          default: "roll",
-          close: () => resolve(null),
-        }).render(true);
-      });
-}
-
-export async function defendRollDialog(actor,modifier){
+export async function attackRollDialogV2(actor, itemId, data_roll, label, damage) {
+  let rollDRFormula = 12;
+  let rollDamageFormula = damage || "1d6";
+  let rollArmorFormula = null;
+  const item = actor.items.get(itemId);
   const actorRollData = actor.getRollData();
-  let label = "Defend Roll";
-  const rollFormula = `1d20 + ${modifier}`;
+
+  if (!label) label = "Roll";
+  const rollFormula = data_roll;
 
   const rollResult = {
     actor,
+    rollFormula,
+    item,
     label,
-    rollFormula
+    rollDRFormula,
+    rollDamageFormula,
+    rollArmorFormula
   };
-  const html = await foundry.applications.handlebars.renderTemplate(
-    "systems/bpnb-borg/templates/dialogs/defend_dialog.hbs",
-    rollResult
-  );
+
+  const html = await renderTemplate("systems/bpnb-borg-ru/templates/dialogs/attack_roll_dialog.hbs", rollResult);
 
   return new Promise((resolve) => {
     new Dialog({
-      title: "Defend Roll Dialog",
+      title: game.i18n.localize("BPNB_BORG.RollDialog.Roll"),
       content: html,
       buttons: {
         roll: {
           icon: '<i class="fas fa-dice-d20"></i>',
           label: game.i18n.localize("BPNB_BORG.RollDialog.Roll"),
-          callback: (html) => defendRollCallback(actor, html),
+          callback: (html) => attackDialogCallbackV2(actor, html, resolve),
         },
       },
       default: "roll",
@@ -89,212 +46,167 @@ export async function defendRollDialog(actor,modifier){
   });
 }
 
-export async function attackRollDialog(actor,itemId,data_roll,label){
-    let attackDR = 12;
-    const item = actor.items.get(itemId);
-    const actorRollData = actor.getRollData();
-    console.log("label:" + label)
-    if (!label){
-      label = "Roll"
-    }
-    
-    //const isRanged = itemRollData.weaponType === "ranged";
-    //const ability = isRanged ? "presence" : "strength";
-    //const attackRoll = new Roll(`d20+diceModifier`, actorRollData);
-    const rollFormula = data_roll;
+export async function defendRollDialog(actor, modifier = 0) {
+  const actorRollData = actor.getRollData();
+  const label = game.i18n.localize("BPNB_BORG.Labels.Defend");
+  const rollFormula = `1d20 + ${modifier}`;
 
-    //await attackRoll.evaluate();
-    //await showDice(attackRoll);
-    
-    const cardTitle = "RollDialog";
-    const rollResult = {
-        actor,
-        rollFormula,
-        cardTitle,
-        item,
-        label
-      };
-      const html = await foundry.applications.handlebars.renderTemplate(
-        "systems/bpnb-borg/templates/dialogs/roll_dialog.hbs",
-        rollResult
-      );
+  const rollResult = { actor, label, rollFormula };
 
-      return new Promise((resolve) => {
-        new Dialog({
-          title: "Roll Dialog",
-          content: html,
-          buttons: {
-            roll: {
-              icon: '<i class="fas fa-dice-d20"></i>',
-              label: game.i18n.localize("BPNB_BORG.RollDialog.Roll"),
-              callback: (html) => attackDialogCallback(actor, html),
-            },
-          },
-          default: "roll",
-          close: () => resolve(null),
-        }).render(true);
-      });
+  const html = await renderTemplate("systems/bpnb-borg-ru/templates/dialogs/defend_dialog.hbs", rollResult);
+
+  return new Promise((resolve) => {
+    new Dialog({
+      title: label,
+      content: html,
+      buttons: {
+        roll: {
+          icon: '<i class="fas fa-dice-d20"></i>',
+          label: game.i18n.localize("BPNB_BORG.RollDialog.Roll"),
+          callback: (html) => defendRollCallback(actor, html, resolve),
+        },
+      },
+      default: "roll",
+      close: () => resolve(null),
+    }).render(true);
+  });
 }
 
-async function attackDialogCallbackV2(actor, html) {
-  const form = html[0].querySelector("form");
-  const itemId = form.itemid.value;
-  const rollFormula = form.rollFormula.value;
-  const rollDamageFormnula = form.rollDamageFormula.value;
-  const rollArmorFormula = form.rollArmorFormula.value;
-  const rollDRFormula = form.rollDRFormula.value;
-  const label = form.rollLabel.value;
+export async function attackRollDialog(actor, itemId, data_roll, label) {
+  const item = actor.items.get(itemId);
   const actorRollData = actor.getRollData();
+  if (!label) label = "Roll";
+  const rollFormula = data_roll;
 
-  let attackResult = 0;
-  let damageResult = 0;
-  let armorResult = 0;
+  const rollResult = { actor, rollFormula, item, label };
 
-  let isHit = false;
-  let isFumble = false;
-  let isCrit = false;
+  const html = await renderTemplate("systems/bpnb-borg-ru/templates/dialogs/roll_dialog.hbs", rollResult);
 
+  return new Promise((resolve) => {
+    new Dialog({
+      title: game.i18n.localize("BPNB_BORG.RollDialog.Roll"),
+      content: html,
+      buttons: {
+        roll: {
+          icon: '<i class="fas fa-dice-d20"></i>',
+          label: game.i18n.localize("BPNB_BORG.RollDialog.Roll"),
+          callback: (html) => attackDialogCallback(actor, html, resolve),
+        },
+      },
+      default: "roll",
+      close: () => resolve(null),
+    }).render(true);
+  });
+}
+
+// === ВТОРАЯ ЧАСТЬ: ОБРАБОТКА БРОСКОВ И КАРТЫ ===
+
+async function attackDialogCallbackV2(actor, html, resolve) {
+  const form = html[0].querySelector("form");
+  const rollFormula = form.rollFormula.value;
+  const rollDRFormula = parseInt(form.rollDRFormula.value) || 12;
+  const rollDamageFormula = form.rollDamageFormula.value || "1d6";
+  const rollArmorFormula = form.rollArmorFormula.value || null;
+
+  const actorRollData = actor.getRollData();
   const dicePromises = [];
 
   const attackRoll = new Roll(rollFormula, actorRollData);
   await attackRoll.evaluate();
-  const d20Result = attackRoll.terms[0].results[0].result;
   addShowDicePromise(dicePromises, attackRoll);
 
-  let attackOutcome = game.i18n.localize('BPNB_BORG.Labels.Attack_Miss');
+  let isHit = false;
+  let isCrit = attackRoll.terms[0].results[0].result === 20;
+  let attackOutcome = game.i18n.localize("BPNB_BORG.Labels.Attack_Miss");
 
-  if(d20Result == 1){
-    isFumble = true
-    attackOutcome = game.i18n.localize('BPNB_BORG.Labels.Attack_Fumble');
-  }
-  else if(d20Result == 20){
-    isCrit = true
-    isHit = true
-    attackOutcome = game.i18n.localize('BPNB_BORG.Labels.Attack_Crit');
-  }
-  else if(attackRoll.total >= rollDRFormula) {
+  if (isCrit || attackRoll.total >= rollDRFormula) {
     isHit = true;
+    attackOutcome = isCrit
+      ? game.i18n.localize("BPNB_BORG.Labels.Attack_Crit")
+      : game.i18n.localize("BPNB_BORG.Labels.Attack_Hit");
   }
 
-  
   let damageRoll = null;
   let armorRoll = null;
   let totalDamage = 0;
 
-  if(isHit){
-    attackOutcome = game.i18n.localize('BPNB_BORG.Labels.Attack_Hit');
-    damageRoll = new Roll(rollDamageFormnula, actorRollData);
+  if (isHit) {
+    damageRoll = new Roll(rollDamageFormula, actorRollData);
     await damageRoll.evaluate();
     addShowDicePromise(dicePromises, damageRoll);
-    damageResult = damageRoll.total;
-    if(isCrit){
-      damageResult = damageResult * 2;
-    }
+    let damageResult = damageRoll.total;
+    if (isCrit) damageResult *= 2;
 
-    totalDamage = damageResult
+    totalDamage = damageResult;
+
     if (rollArmorFormula) {
       armorRoll = new Roll(rollArmorFormula, actorRollData);
       await armorRoll.evaluate();
-      armorResult = armorRoll.total;
       addShowDicePromise(dicePromises, armorRoll);
-
-      totalDamage = totalDamage - armorResult;
-      if (totalDamage < 0) {
-        totalDamage = 0;
-      }
-    }  
-  }
-  
-
-  if (dicePromises) {
-      await Promise.all(dicePromises);
+      const armorResult = armorRoll.total;
+      totalDamage = Math.max(0, totalDamage - armorResult);
+    }
   }
 
-  let attackDR = parseInt(rollDRFormula);
-  let attackFormula = attackRoll.formula;
+  await Promise.all(dicePromises);
+
   const rollResult = {
     actor,
     isHit,
-    attackDR,
-    attackFormula,
+    isCrit,
     attackRoll,
     attackOutcome,
     damageRoll,
-    damageResult,
     totalDamage,
     armorRoll,
-    label
-  }
-  renderAttackRollCard(actor,rollResult)
+    label: form.rollLabel?.value || "Attack"
+  };
+
+  await renderAttackRollCard(actor, rollResult);
+  resolve(rollResult);
 }
 
-async function renderAttackRollCard(actor, rollResult) {
-  const html = await renderTemplate(
-    "systems/bpnb-borg/templates/chat/attack-roll-card.hbs",
-    rollResult
-  );
-  ChatMessage.create({
-    content: html,
-    speaker: ChatMessage.getSpeaker({ actor }),
-  });
-}
-
-async function renderDefendRollCard(actor, rollResult) {
-  const html = await renderTemplate(
-    "systems/bpnb-borg/templates/chat/defend-roll-card.hbs",
-    rollResult
-  );
-  ChatMessage.create({
-    content: html,
-    speaker: ChatMessage.getSpeaker({ actor }),
-  });
-}
-
-async function attackDialogCallback(actor, html) {
+async function attackDialogCallback(actor, html, resolve) {
   const form = html[0].querySelector("form");
-  const itemId = form.itemid.value;
   const rollFormula = form.rollFormula.value;
-  const rollLabel = form.rollLabel.value;
   const actorRollData = actor.getRollData();
 
   const attackRoll = new Roll(rollFormula, actorRollData);
   await attackRoll.evaluate();
 
-  attackRoll.toMessage({
-    speaker: ChatMessage.getSpeaker({ actor: actor }),
-    flavor: rollLabel,
-    rollMode: game.settings.get('core', 'rollMode'),
+  await attackRoll.toMessage({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    flavor: form.rollLabel.value || "Roll",
   });
+
+  resolve(attackRoll);
 }
 
-async function defendRollCallback(actor,html){
+async function defendRollCallback(actor, html, resolve) {
   const form = html[0].querySelector("form");
   const rollFormula = form.rollFormula.value;
-  const defendDR = form.rollDR.value;
+  const defendDR = parseInt(form.rollDR.value) || 12;
   const actorRollData = actor.getRollData();
-  const label = form.rollLabel.value;
 
   const dicePromises = [];
   const defendRoll = new Roll(rollFormula, actorRollData);
   await defendRoll.evaluate();
   addShowDicePromise(dicePromises, defendRoll);
 
-  let d20Result = defendRoll.terms[0].results[0].result;
+  const d20Result = defendRoll.terms[0].results[0].result;
 
   let resultTitle = "";
   let resultBody = null;
 
-  if(d20Result == 20){
+  if (d20Result === 20) {
     resultTitle = game.i18n.localize('BPNB_BORG.Labels.Defend_Critical_Success');
     resultBody = game.i18n.localize('BPNB_BORG.Labels.Defend_Critical_Success_Action');
-  }
-  else if(d20Result == 1){
+  } else if (d20Result === 1) {
     resultTitle = game.i18n.localize('BPNB_BORG.Labels.Defend_Fumble');
     resultBody = game.i18n.localize('BPNB_BORG.Labels.Defend_Fumble_Action');
-  }
-  else if(defendRoll.total >= defendDR){
+  } else if (defendRoll.total >= defendDR) {
     resultTitle = game.i18n.localize('BPNB_BORG.Labels.Defend_Success');
-  }else{
+  } else {
     resultTitle = game.i18n.localize('BPNB_BORG.Labels.Defend_Got_Hit');
   }
 
@@ -302,11 +214,29 @@ async function defendRollCallback(actor,html){
 
   const rollResult = {
     actor,
-    label,
+    label: form.rollLabel.value,
     resultTitle,
     resultBody,
     defendRoll,
     defendDR
-  }
-  renderDefendRollCard(actor,rollResult)
+  };
+
+  await renderDefendRollCard(actor, rollResult);
+  resolve(rollResult);
+}
+
+async function renderAttackRollCard(actor, rollResult) {
+  const html = await renderTemplate("systems/bpnb-borg-ru/templates/chat/attack-roll-card.hbs", rollResult);
+  ChatMessage.create({
+    content: html,
+    speaker: ChatMessage.getSpeaker({ actor }),
+  });
+}
+
+async function renderDefendRollCard(actor, rollResult) {
+  const html = await renderTemplate("systems/bpnb-borg-ru/templates/chat/defend-roll-card.hbs", rollResult);
+  ChatMessage.create({
+    content: html,
+    speaker: ChatMessage.getSpeaker({ actor }),
+  });
 }

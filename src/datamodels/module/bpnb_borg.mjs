@@ -17,7 +17,7 @@ import * as models from './data/_module.mjs';
 Hooks.once('init', function () {
   // Add utility classes to the global game object so that they're more easily
   // accessible in global contexts.
-  game.bpnb_borg = {
+  game.bpnb_borg-ru = {
     Bpnb_borgActor,
     Bpnb_borgItem,
     rollItemMacro,
@@ -31,7 +31,7 @@ Hooks.once('init', function () {
    * @type {String}
    */
   CONFIG.Combat.initiative = {
-    formula: '1d20 + @abilities.dex.mod',
+    formula: '1d20 + @abilities.agl.mod',
     decimals: 2,
   };
 
