@@ -26,7 +26,7 @@ export class Bpnb_borgActorSheet extends ActorSheet {
 
   /** @override */
   get template() {
-    return `systems/bpnb-borg/templates/actor/actor-${this.actor.type}-sheet.hbs`;
+    return `systems/bpnb-borg-ru/templates/actor/actor-${this.actor.type}-sheet.hbs`;
   }
 
   /* -------------------------------------------- */
