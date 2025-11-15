@@ -2,7 +2,13 @@
   {{#each effects as |section sid|}}
     <li class="items-header flexrow" data-effect-type="{{section.type}}" data-parent-id="{{@root.actor.id}}">
       <h3 class="item-name effect-name flexrow">
-        {{localize (lookup @root "section.label")}}
+        {{#if (eq section.type "temporary")}}
+          {{localize "EFFECT.Temporary"}}
+        {{else if (eq section.type "passive")}}
+          {{localize "EFFECT.Passive"}}
+        {{else if (eq section.type "inactive")}}
+          {{localize "EFFECT.Inactive"}}
+        {{/if}}
       </h3>
       <div class="effect-source">{{localize "EFFECT.Source"}}</div>
       <div class="effect-source">{{localize "EFFECT.TabDuration"}}</div>
