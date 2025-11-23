@@ -1,0 +1,47 @@
+<div class="bpnb-generator">
+  <h2>Генератор персонажей — Чёрный Порох & Сера</h2>
+
+  <div class="grid">
+    <div class="column" style="flex:1; min-width:260px;">
+      <label>Имя (введите или оставьте пустым для случайного)</label>
+      <input id="bpnb-name-input" type="text" placeholder="Имя персонажа"/>
+
+      <label style="margin-top:10px;">Архетипы (можно выбрать несколько)</label>
+      <div class="classes-list" style="max-height:220px; overflow:auto; border:1px solid var(--color-border-light); padding:6px;"></div>
+
+      <label style="margin-top:10px;">Подклассы (показываются при выборе архетипа)</label>
+      <div class="subclasses-list" style="max-height:220px; overflow:auto; border:1px solid var(--color-border-light); padding:6px;"></div>
+    </div>
+
+    <div class="column" style="flex:1; min-width:260px;">
+      <label>Параметры генерации</label>
+      <div style="margin-bottom:8px;">
+        <label><input id="bpnb-gen-stats" type="checkbox" checked> Автоген характеристик (3d6)</label>
+      </div>
+      <div style="margin-bottom:8px;">
+        <label><input id="bpnb-gen-gear" type="checkbox" checked> Автоген экипировки</label>
+      </div>
+
+      <div style="margin-top:16px;">
+        <button id="bpnb-random" class="btn"><i class="fas fa-dice-d20"></i> Создать случайного</button>
+        <button id="bpnb-create" class="btn"><i class="fas fa-user-plus"></i> Создать персонажа</button>
+      </div>
+
+      <hr/>
+
+      <div>
+        <label>Предпросмотр</label>
+        <div id="bpnb-preview" style="white-space:pre-line; border:1px solid var(--color-border-light); padding:8px; min-height:80px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.bpnb-generator h2 { margin-bottom: 10px; font-weight:700; }
+.bpnb-generator .grid { display:flex; gap:12px; }
+.bpnb-generator label { display:block; margin-top:6px; font-weight:600; }
+.bpnb-generator input[type="text"] { width:100%; padding:6px; margin-top:6px; }
+.bpnb-generator .btn { margin-right:8px; margin-top:8px; padding:6px 10px; }
+.checkbox-label { display:block; margin:4px 0; }
+</style>
