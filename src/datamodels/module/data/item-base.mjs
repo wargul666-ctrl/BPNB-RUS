@@ -5,6 +5,7 @@ export default class Bpnb_borgItemBase extends foundry.abstract.TypeDataModel {
     const schema = {};
 
     schema.description = new fields.StringField({ required: true, blank: true });
+    schema.quantity = new fields.NumberField({ required: true, initial: 1, min: 1 });
 
     return schema;
   }

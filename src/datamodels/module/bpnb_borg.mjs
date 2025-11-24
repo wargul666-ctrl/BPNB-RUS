@@ -17,7 +17,9 @@ import * as models from './data/_module.mjs';
 Hooks.once('init', function () {
   // Add utility classes to the global game object so that they're more easily
   // accessible in global contexts.
-  game.bpnb_borg-ru = {
+  // Use a valid identifier for the global namespace (no hyphens).
+  // Keep naming consistent with other module files which use `game.bpnb_borg`.
+  game.bpnb_borg = {
     Bpnb_borgActor,
     Bpnb_borgItem,
     rollItemMacro,

@@ -6,11 +6,13 @@
         <input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'BPNB_BORG.Item.Name'}}"/>
       </h1>
 
+      <div class="quantity-controls">
+        <button type="button" class="quantity-btn" data-action="decrease-quantity" title="Уменьшить количество">−</button>
+        <input type="number" name="system.quantity" class="quantity-input" value="{{system.quantity}}" min="1" data-dtype="Number" />
+        <button type="button" class="quantity-btn" data-action="increase-quantity" title="Увеличить количество">+</button>
+      </div>
+
       <div class="grid grid-3col">
-        <div class="resource">
-          <label class="resource-label">{{localize "BPNB_BORG.Item.Quantity"}}</label>
-          <input type="number" name="system.quantity" value="{{system.quantity}}" data-dtype="Number"/>
-        </div>
         <div class="resource">
           <label class="resource-label">{{localize "BPNB_BORG.Item.Weight"}}</label>
           <input type="number" name="system.weight" value="{{system.weight}}" data-dtype="Number"/>

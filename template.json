@@ -76,6 +76,7 @@
       "needs_ammo": false,
       "ammunition": 0,
       "damage": "1d4",
+      "equipped": false,
       "sheet": {
         "template": "systems/bpnb-borg-ru/templates/item/item-weapon-sheet.hbs"
       }
@@ -97,6 +98,7 @@
       "templates": ["base"],
       "level": 1,
       "dice": "d2",
+      "equipped": false,
       "sheet": {
         "template": "systems/bpnb-borg-ru/templates/item/item-armour-sheet.hbs"
       }

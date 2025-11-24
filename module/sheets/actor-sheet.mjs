@@ -7,9 +7,9 @@ import { attackRollDialog, attackRollDialogV2, defendRollDialog } from '../roll_
 /**
  * КЛАСС ЛИСТА ПЕРСОНАЖА ДЛЯ РУССКОЙ ЛОКАЛИЗАЦИИ
  * Наследуется от стандартного ActorSheet Foundry VTT
- * @extends {ActorSheet}
+ * @extends {foundry.appv1.sheets.ActorSheet}
  */
-export class Bpnb_borgActorSheet extends ActorSheet {
+export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
 
   /** @override */
   // НАСТРОЙКИ ПО УМОЛЧАНИЮ — ШИРИНА, ВЫСОТА, КЛАССЫ, ГЛАВНЫЙ ШАБЛОН
@@ -170,6 +170,52 @@ export class Bpnb_borgActorSheet extends ActorSheet {
     html.on('click', '.item-delete', (ev) => {
       const itemId = $(ev.currentTarget).parents('.item').data('itemId');
       this.actor.items.get(itemId)?.delete();
+    });
+
+    // ПЕРЕКЛЮЧИТЬ ЭКИПИРОВКУ
+    html.on('click', '.item-equipped-toggle', async (ev) => {
+      ev.preventDefault();
+      const itemId = $(ev.currentTarget).data('itemId');
+      const item = this.actor.items.get(itemId);
+      if (!item) return;
+
+      const isEquipped = item.system?.equipped ?? false;
+      
+      if (isEquipped) {
+        // Снять с экипировки
+        await item.unequip();
+      } else {
+        // Экипировать
+        if (item.type === 'armour') {
+          // Для брони: ищем другую экипированную броню и снимаем её
+          for (const otherItem of this.actor.items) {
+            if (otherItem.type === 'armour' && otherItem.id !== item.id && otherItem.system.equipped) {
+              await otherItem.unequip();
+            }
+          }
+        }
+        else if (item.type === 'weapon') {
+          // Для оружия: максимум 2 экипированных предмета (две руки)
+          const equippedWeapons = this.actor.items.filter(
+            i => i.type === 'weapon' && i.system.equipped && i.id !== item.id
+          );
+          
+          if (equippedWeapons.length >= 2) {
+            ui.notifications.warn(`У вас уже 2 оружия в руках! Сначала снимите одно.`);
+            return;
+          }
+        }
+        
+        await item.equip();
+      }
+      
+      // Обновляем кнопку
+      const button = $(ev.currentTarget);
+      if (item.system.equipped) {
+        button.addClass("equipped");
+      } else {
+        button.removeClass("equipped");
+      }
     });
 
     // УПРАВЛЕНИЕ АКТИВНЫМИ ЭФФЕКТАМИ

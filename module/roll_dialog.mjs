@@ -21,13 +21,14 @@ export async function attackRollDialogV2(actor, itemId, data_roll, label, damage
     actor,
     rollFormula,
     item,
+    itemId,
     label,
     rollDRFormula,
     rollDamageFormula,
     rollArmorFormula
   };
 
-  const html = await renderTemplate("systems/bpnb-borg-ru/templates/dialogs/attack_roll_dialog.hbs", rollResult);
+  const html = await foundry.applications.handlebars.renderTemplate("systems/bpnb-borg-ru/templates/dialogs/attack_roll_dialog.hbs", rollResult);
 
   return new Promise((resolve) => {
     new Dialog({
@@ -53,7 +54,7 @@ export async function defendRollDialog(actor, modifier = 0) {
 
   const rollResult = { actor, label, rollFormula };
 
-  const html = await renderTemplate("systems/bpnb-borg-ru/templates/dialogs/defend_dialog.hbs", rollResult);
+  const html = await foundry.applications.handlebars.renderTemplate("systems/bpnb-borg-ru/templates/dialogs/defend_dialog.hbs", rollResult);
 
   return new Promise((resolve) => {
     new Dialog({
@@ -80,7 +81,7 @@ export async function attackRollDialog(actor, itemId, data_roll, label) {
 
   const rollResult = { actor, rollFormula, item, label };
 
-  const html = await renderTemplate("systems/bpnb-borg-ru/templates/dialogs/roll_dialog.hbs", rollResult);
+  const html = await foundry.applications.handlebars.renderTemplate("systems/bpnb-borg-ru/templates/dialogs/roll_dialog.hbs", rollResult);
 
   return new Promise((resolve) => {
     new Dialog({
@@ -103,6 +104,7 @@ export async function attackRollDialog(actor, itemId, data_roll, label) {
 
 async function attackDialogCallbackV2(actor, html, resolve) {
   const form = html[0].querySelector("form");
+  const itemId = form.itemid?.value;
   const rollFormula = form.rollFormula.value;
   const rollDRFormula = parseInt(form.rollDRFormula.value) || 12;
   const rollDamageFormula = form.rollDamageFormula.value || "1d6";
@@ -163,6 +165,21 @@ async function attackDialogCallbackV2(actor, html, resolve) {
   };
 
   await renderAttackRollCard(actor, rollResult);
+  
+  // Обработка расходных предметов (бомб, стрел и т.д.)
+  // КРИТИЧНО: await перед _handleConsumable, иначе не выполнится
+  try {
+    if (itemId) {
+      const item = actor.items.get(itemId);
+      if (item) {
+        console.log(`BPNB-RU | Инициализация расхода для: ${item.name} (ID: ${itemId})`);
+        await item._handleConsumable(attackRoll);
+      }
+    }
+  } catch (error) {
+    console.error(`BPNB-RU | Ошибка при расходе предмета:`, error);
+  }
+  
   resolve(rollResult);
 }
 
@@ -202,8 +219,12 @@ async function defendRollCallback(actor, html, resolve) {
     resultTitle = game.i18n.localize('BPNB_BORG.Labels.Defend_Critical_Success');
     resultBody = game.i18n.localize('BPNB_BORG.Labels.Defend_Critical_Success_Action');
   } else if (d20Result === 1) {
+    // ПРОВАЛ ЗАЩИТЫ (Чистая 1): броня получает урон
     resultTitle = game.i18n.localize('BPNB_BORG.Labels.Defend_Fumble');
     resultBody = game.i18n.localize('BPNB_BORG.Labels.Defend_Fumble_Action');
+    
+    // Обработка урона броне
+    await _handleArmorDamage(actor);
   } else if (defendRoll.total >= defendDR) {
     resultTitle = game.i18n.localize('BPNB_BORG.Labels.Defend_Success');
   } else {
@@ -225,8 +246,63 @@ async function defendRollCallback(actor, html, resolve) {
   resolve(rollResult);
 }
 
+/**
+ * Обработка урона броне при провале защиты
+ * @param {Actor} actor - персонаж, который получил урон
+ * @private
+ */
+async function _handleArmorDamage(actor) {
+  // Ищем надетую броню в инвентаре персонажа
+  const armor = actor.items.find(item => item.type === 'armour');
+  
+  if (!armor) {
+    // Нет брони - ничего не делаем
+    return;
+  }
+
+  const currentLevel = armor.system.level || 1;
+  const newLevel = Math.max(0, currentLevel - 1);
+
+  console.log(`BPNB-RU | Урон броне: уровень ${currentLevel} → ${newLevel}`);
+
+  if (newLevel === 0) {
+    // Броня полностью испорчена и не может быть восстановлена
+    await armor.delete();
+    
+    const chatData = {
+      user: game.user.id,
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div style="border: 2px solid red; padding: 10px; background: #ffe6e6;">
+        <strong style="color: red;">⚠️ БРОНЯ ИСПОРЧЕНА!</strong><br/>
+        ${armor.name} полностью разрушена при провале защиты и больше не подлежит ремонту.<br/>
+        Броня удалена из инвентаря ${actor.name}.
+      </div>`
+    };
+    await ChatMessage.create(chatData);
+    
+    ui.notifications.error(`${armor.name} полностью испорчена и разрушена!`);
+  } else {
+    // Броня повреждена, но может быть восстановлена
+    await armor.update({ 'system.level': newLevel });
+    
+    const chatData = {
+      user: game.user.id,
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div style="border: 2px solid orange; padding: 10px; background: #fff3e0;">
+        <strong style="color: orange;">⚠️ БРОНЯ ПОВРЕЖДЕНА!</strong><br/>
+        ${armor.name} повреждена при провале защиты.<br/>
+        <strong>Уровень:</strong> ${currentLevel} → ${newLevel}<br/>
+        Броня может быть отремонтирована.
+      </div>`
+    };
+    await ChatMessage.create(chatData);
+    
+    ui.notifications.warn(`${armor.name} повреждена! Уровень: ${currentLevel} → ${newLevel}`);
+  }
+}
+
 async function renderAttackRollCard(actor, rollResult) {
-  const html = await renderTemplate("systems/bpnb-borg-ru/templates/chat/attack-roll-card.hbs", rollResult);
+  const html = await foundry.applications.handlebars.renderTemplate("systems/bpnb-borg-ru/templates/chat/attack-roll-card.hbs", rollResult);
   ChatMessage.create({
     content: html,
     speaker: ChatMessage.getSpeaker({ actor }),
@@ -234,7 +310,7 @@ async function renderAttackRollCard(actor, rollResult) {
 }
 
 async function renderDefendRollCard(actor, rollResult) {
-  const html = await renderTemplate("systems/bpnb-borg-ru/templates/chat/defend-roll-card.hbs", rollResult);
+  const html = await foundry.applications.handlebars.renderTemplate("systems/bpnb-borg-ru/templates/chat/defend-roll-card.hbs", rollResult);
   ChatMessage.create({
     content: html,
     speaker: ChatMessage.getSpeaker({ actor }),

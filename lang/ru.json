@@ -65,6 +65,12 @@
       "Quantity": "Количество",
       "Weight": "Вес",
       "Gold": "Золото",
+      "GP": "Золото",
+      "Ranged": "Дальнобойное",
+      "NeedsAmmunition": "Требует боеприпасы?",
+      "Description": "Описание",
+      "Damage": "Урон",
+      "Armor": "Броня",
       "Spell": {
         "SpellLVL": "Заклинания уровня {level}",
         "AddLVL": "Добавить ур. {level}",

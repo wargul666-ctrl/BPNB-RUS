@@ -241,20 +241,24 @@
 }
 .bpnb_borg .sheet-header {
   flex: 0 auto;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-start;
   margin-bottom: 10px;
+  align-items: flex-start;
+  gap: 10px;
 }
 .bpnb_borg .sheet-header .profile-img {
   flex: 0 0 100px;
   height: 100px;
-  margin-right: 10px;
 }
 .bpnb_borg .sheet-header .header-fields {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 .bpnb_borg .sheet-header h1.charname {
   height: 50px;
@@ -473,3 +477,123 @@
     padding: 0;
     width: 16px;
 }
+
+/* Кнопка генератора персонажей */
+#bpnb-generator-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #191813;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 4px;
+  transition: all 0.2s ease;
+}
+
+#bpnb-generator-button:hover {
+  background: #333;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.3);
+}
+
+#bpnb-generator-button i {
+  font-size: 14px;
+}
+
+/* Quantity Controls */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.quantity-btn {
+  background: #ddd;
+  color: #333;
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 32px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.quantity-btn:hover {
+  background: #bbb;
+  border-color: #666;
+}
+
+.quantity-btn:active {
+  background: #999;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.quantity-input {
+  width: 60px;
+  padding: 4px;
+  border: 1px solid #999;
+  border-radius: 3px;
+  background: #ddd;
+  color: #333;
+  text-align: center;
+  font-weight: bold;
+}
+
+.quantity-input:focus {
+  outline: none;
+  border-color: #333;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Equipped toggle button in item lists */
+.item-equipped-toggle {
+  background: transparent;
+  color: #999;
+  border: none;
+  padding: 2px 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  margin: 0 4px;
+  text-decoration: none;
+}
+
+.item-equipped-toggle:hover {
+  color: #666;
+  transform: scale(1.1);
+}
+
+.item-equipped-toggle.equipped {
+  color: #cc6600;
+  text-shadow: 0 0 4px rgba(204, 102, 0, 0.6);
+  font-weight: bold;
+}
+
+.item-equipped-toggle.equipped:hover {
+  color: #ff7700;
+  text-shadow: 0 0 6px rgba(255, 119, 0, 0.8);
+}
+
+.items-list .item .item-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+

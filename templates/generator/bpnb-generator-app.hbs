@@ -1,0 +1,211 @@
+<form class="bpnb-generator-form">
+  <div class="generator-container">
+    <!-- ЛЕВАЯ КОЛОНКА: Имя и классы -->
+    <div class="generator-left">
+      <h2>Генератор персонажей</h2>
+
+      <div class="form-group">
+        <label for="bpnb-name-input">Имя персонажа:</label>
+        <input 
+          id="bpnb-name-input" 
+          type="text" 
+          name="character_name"
+          placeholder="Оставьте пустым для случайного имени"
+        />
+      </div>
+
+      <h3>Выберите классы</h3>
+      <div class="classes-list">
+        {{#each classes as |classItem|}}
+        <div class="class-group">
+          <label class="class-checkbox">
+            <input 
+              type="checkbox" 
+              name="class_{{classItem.id}}" 
+              checked 
+            />
+            <strong>{{classItem.name}}</strong>
+          </label>
+
+          {{#if ../subclasses}}
+          <div class="subclasses-list">
+            {{#each ../subclasses as |subclass|}}
+              {{#if (eq subclass.class classItem.id)}}
+              <label class="subclass-item">
+                <input 
+                  type="checkbox" 
+                  name="subclass_{{subclass.id}}" 
+                  checked 
+                />
+                {{subclass.name}}
+              </label>
+              {{/if}}
+            {{/each}}
+          </div>
+          {{/if}}
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    <!-- ПРАВАЯ КОЛОНКА: Кнопки -->
+    <div class="generator-right">
+      <h3>Действия</h3>
+
+      <div class="button-group">
+        <button 
+          id="bpnb-create" 
+          type="button" 
+          class="btn btn-primary"
+        >
+          <i class="fas fa-user-plus"></i> Создать персонажа
+        </button>
+        <button 
+          id="bpnb-random-full" 
+          type="button" 
+          class="btn btn-secondary"
+        >
+          <i class="fas fa-dice-d20"></i> Полная рандомизация
+        </button>
+      </div>
+
+      <div class="info-box">
+        <p><strong>Создать персонажа</strong> — генерирует с выбранными классами</p>
+        <p><strong>Полная рандомизация</strong> — полностью случайный персонаж</p>
+      </div>
+    </div>
+  </div>
+</form>
+
+<style>
+.bpnb-generator-form {
+  padding: 15px;
+}
+
+.generator-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.generator-left, .generator-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.generator-left h2 {
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.classes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.class-group {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.class-checkbox {
+  display: block;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.class-checkbox input {
+  margin-right: 6px;
+}
+
+.subclasses-list {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.subclass-item {
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.subclass-item input {
+  margin-right: 4px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: #191813;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #333;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.3);
+}
+
+.btn-secondary {
+  background: #556b2f;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #6d8d38;
+}
+
+.info-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  background: #f9f9f9;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.info-box p {
+  margin: 0 0 8px 0;
+}
+
+.info-box p:last-child {
+  margin-bottom: 0;
+}
+</style>

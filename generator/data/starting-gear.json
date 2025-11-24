@@ -1,0 +1,92 @@
+{
+  "shooter": {
+    "weapons": ["musket"],
+    "armor": [],
+    "items": ["bullets10", "gunpowder"],
+    "features": []
+  },
+  "greatsword": {
+    "weapons": ["zweihander"],
+    "armor": ["light-armor"],
+    "items": ["fancy-clothes"],
+    "features": []
+  },
+  "bombardier": {
+    "weapons": ["bomb", "bomb", "bomb", "bomb", "bomb", "bomb"],
+    "armor": [],
+    "items": ["gunpowder", "gunpowder"],
+    "features": []
+  },
+  "pistoleer": {
+    "weapons": ["pistol", "pistol"],
+    "armor": [],
+    "items": ["bullets10", "gunpowder", "gunpowder"],
+    "features": []
+  },
+  "trapmaster": {
+    "weapons": ["beartrap", "beartrap"],
+    "armor": [],
+    "items": ["nails"],
+    "features": []
+  },
+  "beasthunter": {
+    "weapons": ["bow"],
+    "armor": [],
+    "items": ["arrows20"],
+    "features": []
+  },
+  "woodwitch": {
+    "weapons": [],
+    "armor": [],
+    "items": [],
+    "features": []
+  },
+  "herbalist": {
+    "weapons": [],
+    "armor": [],
+    "items": ["medkit"],
+    "features": []
+  },
+  "sorceress": {
+    "weapons": [],
+    "armor": [],
+    "items": [],
+    "features": []
+  },
+  "wanderer": {
+    "weapons": ["crossbow"],
+    "armor": [],
+    "items": ["bolts20"],
+    "features": []
+  },
+  "thief": {
+    "weapons": ["crossbow"],
+    "armor": [],
+    "items": ["smokebomb", "smokebomb", "smokebomb", "smokebomb", "smokebomb"],
+    "features": []
+  },
+  "liar": {
+    "weapons": [],
+    "armor": [],
+    "items": [],
+    "features": []
+  },
+  "holywarrior": {
+    "weapons": ["sword"],
+    "armor": ["heavy-armor"],
+    "items": [],
+    "features": []
+  },
+  "healer": {
+    "weapons": [],
+    "armor": [],
+    "items": ["medkit"],
+    "features": []
+  },
+  "cook": {
+    "weapons": [],
+    "armor": [],
+    "items": ["ration", "ration", "ration", "ration", "ration", "ration", "ration", "ration"],
+    "features": []
+  }
+}

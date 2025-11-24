@@ -7,7 +7,7 @@ import {
  * РУССКИЙ ЛИСТ ПРЕДМЕТА — ПОЛНОСТЬЮ РАБОЧИЙ
  * Для BPNB BORG RU + Foundry v13
  */
-export class Bpnb_borgItemSheet extends ItemSheet {
+export class Bpnb_borgItemSheet extends foundry.appv1.sheets.ItemSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["bpnb-borg-ru", "sheet", "item"],
@@ -38,6 +38,13 @@ export class Bpnb_borgItemSheet extends ItemSheet {
     context.system = context.item.system;
     context.flags = context.item.flags;
     context.rollData = this.item.getRollData();
+    // Поддержка quantity в обоих местах: на корневом уровне и в system
+    const qty = this.item.system?.quantity ?? this.item.quantity ?? 1;
+    context.quantity = qty;
+    // Убедимся что system.quantity тоже установлено
+    if (context.system) {
+      context.system.quantity = context.system.quantity ?? qty;
+    }
 
     // АКТИВНЫЕ ЭФФЕКТЫ — ТЕПЕРЬ РАБОТАЮТ!
     context.effects = prepareActiveEffectCategories(this.item.effects);
@@ -52,6 +59,27 @@ export class Bpnb_borgItemSheet extends ItemSheet {
 
     html.on("click", ".effect-control", (ev) => {
       onManageActiveEffect(ev, this.item);
+    });
+
+    // Обработчик кнопок количества
+    html.on("click", "[data-action='decrease-quantity']", (ev) => {
+      ev.preventDefault();
+      console.log("BPNB-RU | Нажата кнопка уменьшить количество");
+      const currentQty = this.item.system?.quantity ?? this.item.quantity ?? 1;
+      console.log("BPNB-RU | Текущее количество:", currentQty);
+      if (currentQty > 1) {
+        console.log("BPNB-RU | Обновляем количество на:", currentQty - 1);
+        this.item.update({ "system.quantity": currentQty - 1 });
+      }
+    });
+
+    html.on("click", "[data-action='increase-quantity']", (ev) => {
+      ev.preventDefault();
+      console.log("BPNB-RU | Нажата кнопка увеличить количество");
+      const currentQty = this.item.system?.quantity ?? this.item.quantity ?? 1;
+      console.log("BPNB-RU | Текущее количество:", currentQty);
+      console.log("BPNB-RU | Обновляем количество на:", currentQty + 1);
+      this.item.update({ "system.quantity": currentQty + 1 });
     });
   }
 }

@@ -14,10 +14,10 @@ export async function preloadHandlebarsTemplates() {
     `${base}/item/item-item-sheet.hbs`,
     `${base}/item/item-feature-sheet.hbs`,
     `${base}/item/item-spell-sheet.hbs`,
-    `${base}/dialogs/attack-roll-dialog.hbs`,
-    `${base}/dialogs/defend-dialog.hbs`,
-    `${base}/dialogs/roll-dialog.hbs`,
-    // ДОБАВИЛ ЭТИ ДВЕ — БЕЗ НИХ ЧАТ-КАРТЫ НЕ РАБОТАЮТ!
+    // Исправлены: дефисы → подчёркивания
+    `${base}/dialogs/attack_roll_dialog.hbs`,
+    `${base}/dialogs/defend_dialog.hbs`,
+    `${base}/dialogs/roll_dialog.hbs`,
     `${base}/chat/attack-roll-card.hbs`,
     `${base}/chat/defend-roll-card.hbs`
   ];
@@ -34,7 +34,7 @@ export async function preloadHandlebarsTemplates() {
 
   // Загружаем основные шаблоны
   try {
-    await loadTemplates(templates);
+    await foundry.applications.handlebars.loadTemplates(templates);
     console.log("BPNB-RU | Основные шаблоны загружены (включая чат-карты)");
   } catch (e) {
     console.error("BPNB-RU | Ошибка загрузки шаблонов:", e);
