@@ -314,15 +314,32 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
         $(ev.currentTarget).removeClass('drag-over');
         
         const containerId = $(ev.currentTarget).data('itemId');
-        const dragData = ev.dataTransfer.getData('text/plain');
         
+        // Пробуем разные способы получить данные
+        let data = null;
         try {
-          const data = JSON.parse(dragData);
-          if (data.type === 'Item' && data.uuid) {
-            this._handleDropItem(containerId, data.uuid);
+          const dragText = ev.dataTransfer.getData('text/plain');
+          if (dragText) {
+            data = JSON.parse(dragText);
           }
         } catch (e) {
-          console.error('Ошибка при drop:', e);
+          console.warn('Ошибка при парсинге drag data:', e);
+        }
+        
+        // Если не получили UUID из JSON, пробуем через application/json
+        if (!data || !data.uuid) {
+          try {
+            const dragJson = ev.dataTransfer.getData('application/json');
+            if (dragJson) {
+              data = JSON.parse(dragJson);
+            }
+          } catch (e) {
+            console.warn('Ошибка при парсинге application/json:', e);
+          }
+        }
+        
+        if (data && data.type === 'Item' && data.uuid) {
+          this._handleDropItem(containerId, data.uuid);
         }
       });
     }
@@ -332,28 +349,42 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
    * Обработать drop предмета в контейнер
    */
   async _handleDropItem(containerId, itemUuid) {
-    const container = this.actor.items.get(containerId);
-    if (!container || container.type !== 'container') return;
+    try {
+      const container = this.actor.items.get(containerId);
+      if (!container || container.type !== 'container') {
+        console.warn('Container not found or not a container type:', containerId);
+        return;
+      }
 
-    // Извлекаем ID предмета из UUID
-    const itemId = itemUuid.split('.').pop();
-    const item = this.actor.items.get(itemId);
-    
-    if (!item || item.id === containerId) {
-      ui.notifications.warn('Не удалось переместить предмет в контейнер');
-      return;
+      // Извлекаем ID предмета из UUID
+      const itemId = itemUuid.split('.').pop();
+      const item = this.actor.items.get(itemId);
+      
+      if (!item) {
+        console.warn('Item not found:', itemId);
+        ui.notifications.warn('Не удалось найти предмет');
+        return;
+      }
+
+      if (item.id === containerId) {
+        ui.notifications.warn('Контейнер не может содержать сам себя');
+        return;
+      }
+
+      // Проверяем место в контейнере
+      const currentSpace = (container.system.totalContainerSpace || 0) + (item.system.containerSpace || 1);
+      if (currentSpace > (container.system.capacity || 10)) {
+        ui.notifications.warn(`${container.name} переполнен! Нет места для ${item.name}`);
+        return;
+      }
+
+      // Добавляем предмет в контейнер
+      await container.addItem(item.id);
+      ui.notifications.info(`${item.name} добавлено в ${container.name}`);
+    } catch (e) {
+      console.error('Ошибка при добавлении предмета в контейнер:', e);
+      ui.notifications.error('Ошибка при добавлении предмета в контейнер');
     }
-
-    // Проверяем место в контейнере
-    const currentSpace = (container.system.totalContainerSpace || 0) + (item.system.containerSpace || 1);
-    if (currentSpace > (container.system.capacity || 10)) {
-      ui.notifications.warn(`${container.name} переполнен! Нет места для ${item.name}`);
-      return;
-    }
-
-    // Добавляем предмет в контейнер
-    await container.addItem(item.id);
-    ui.notifications.info(`${item.name} добавлено в ${container.name}`);
   }
 
   /* ============================================= */

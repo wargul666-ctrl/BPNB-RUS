@@ -65,6 +65,7 @@
       "templates": ["base"],
       "quantity": 1,
       "weight": 0,
+      "containerSpace": 1,
       "formula": "d20 + @str.mod + ceil(@lvl / 2)",
       "sheet": {
         "template": "systems/bpnb-borg-ru/templates/item/item-item-sheet.hbs"
@@ -77,12 +78,14 @@
       "ammunition": 0,
       "damage": "1d4",
       "equipped": false,
+      "containerSpace": 1,
       "sheet": {
         "template": "systems/bpnb-borg-ru/templates/item/item-weapon-sheet.hbs"
       }
     },
     "feature": {
       "templates": ["base"],
+      "containerSpace": 1,
       "sheet": {
         "template": "systems/bpnb-borg-ru/templates/item/item-feature-sheet.hbs"
       }
@@ -90,6 +93,7 @@
     "spell": {
       "templates": ["base"],
       "spellLevel": 1,
+      "containerSpace": 1,
       "sheet": {
         "template": "systems/bpnb-borg-ru/templates/item/item-spell-sheet.hbs"
       }
@@ -99,6 +103,7 @@
       "level": 1,
       "dice": "d2",
       "equipped": false,
+      "containerSpace": 1,
       "sheet": {
         "template": "systems/bpnb-borg-ru/templates/item/item-armour-sheet.hbs"
       }
