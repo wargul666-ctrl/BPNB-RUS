@@ -277,8 +277,9 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
 
       await this.actor.createEmbeddedDocuments('Item', [itemData]);
       
-      // Сбрасываем select на пустое значение
-      $(ev.currentTarget).val('');
+      // Сбрасываем select - выбираем первую опцию
+      const selectEl = ev.currentTarget;
+      selectEl.selectedIndex = 0;
     });
 
     // УДАЛИТЬ ПРЕДМЕТ
