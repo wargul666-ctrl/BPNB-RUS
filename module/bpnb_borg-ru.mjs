@@ -42,7 +42,7 @@ Hooks.once('init', function () {
 
   foundry.documents.collections.Items.unregisterSheet('bpnb_borg', Bpnb_borgItemSheet);
   foundry.documents.collections.Items.registerSheet('bpnb-borg-ru', Bpnb_borgItemSheet, {
-    types: ["item", "feature", "spell", "weapon", "armour"],
+    types: ["item", "feature", "spell", "weapon", "armour", "container"],
     makeDefault: true,
     label: "BPNB_BORG.SheetLabels.Item"
   });
