@@ -224,24 +224,6 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     // ДОБАВИТЬ ПРЕДМЕТ
     html.on('click', '.item-create', this._onItemCreate.bind(this));
 
-    // ИЗВЛЕЧЬ ПРЕДМЕТ ИЗ КОНТЕЙНЕРА
-    html.on('click', '.item-extract', async (ev) => {
-      ev.preventDefault();
-      const itemId = $(ev.currentTarget).parents('.nested-item').data('itemId');
-      const item = this.actor.items.get(itemId);
-      if (!item) return;
-
-      // Найти контейнер который содержит этот предмет
-      const container = this.actor.items.find(c => 
-        c.type === 'container' && (c.system.items || []).includes(itemId)
-      );
-      
-      if (container) {
-        await container.removeItem(itemId);
-        ui.notifications.info(`${item.name} извлечено из ${container.name}`);
-      }
-    });
-
     // УДАЛИТЬ ПРЕДМЕТ
     html.on('click', '.item-delete', async (ev) => {
       const itemId = $(ev.currentTarget).parents('.item').data('itemId');
@@ -516,12 +498,32 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     // Если это перемещение предмета из инвентаря
     if (data.type === 'Item') {
+      const draggedItemId = data.uuid.split('.').pop();
+      
+      // Проверяем если перетащили на область инвентаря (не контейнер) из контейнера
+      // В этом случае сначала пробуем извлечь из контейнера
+      const item = this.actor.items.get(draggedItemId);
+      if (item) {
+        const container = this.actor.items.find(c => 
+          c.type === 'container' && (c.system.items || []).includes(draggedItemId)
+        );
+        
+        // Если drop произошел НЕ на контейнер, но предмет в контейнере - извлекаем
+        const targetContainer = event.target.closest('.container-item');
+        if (!targetContainer && container) {
+          // Извлекаем из контейнера
+          await container.removeItem(draggedItemId);
+          ui.notifications.info(`${item.name} извлечено из ${container.name}`);
+          return false;
+        }
+      }
+      
+      // Проверяем если перетащили в контейнер
       const targetElement = event.target.closest('.container-item');
       
       if (targetElement) {
         const containerId = targetElement.dataset.itemId;
         const container = this.actor.items.get(containerId);
-        const draggedItemId = data.uuid.split('.').pop();
         
         if (container && container.type === 'container') {
           // Добавляем предмет в контейнер
