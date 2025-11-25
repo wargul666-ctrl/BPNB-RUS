@@ -49,12 +49,12 @@
       {{#if (eq item.type "container")}}
       <li class="item flexrow container-item" data-item-id="{{item._id}}" data-droppable="true">
         <div class="item-name">
-          <button type="button" class="container-toggle" data-item-id="{{item._id}}" title="Раскрыть/свернуть">
-            <i class="fas fa-chevron-right"></i>
-          </button>
           <div class="item-image">
             <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" alt="{{item.name}}"/>
           </div>
+          <button type="button" class="container-toggle" data-item-id="{{item._id}}" title="Раскрыть/свернуть">
+            <i class="fas fa-chevron-right"></i>
+          </button>
           <h4 class="rollable" data-item-id="{{item._id}}">{{item.name}}</h4>
           {{#if (gt item.system.totalContainerSpace 0)}}
             <span class="item-prop">({{item.system.totalContainerSpace}}/{{item.system.capacity}})</span>

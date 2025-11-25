@@ -638,6 +638,7 @@
   border: none;
   cursor: pointer;
   padding: 0 5px;
+  margin: 0 2px;
   color: inherit;
   font-size: inherit;
   width: auto;
