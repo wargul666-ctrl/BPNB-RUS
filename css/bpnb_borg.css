@@ -776,7 +776,9 @@
 }
 
 .bpnb_borg .item-create-select:hover {
-  background: rgba(0, 0, 0, 0.10);
+  background: rgba(0, 0, 0, 0.05);
+  color: #191813;
+  text-shadow: 0 0 10px red;
 }
 
 .bpnb_borg .item-create-select:focus {
