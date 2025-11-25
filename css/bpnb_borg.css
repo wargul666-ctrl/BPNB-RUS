@@ -764,7 +764,7 @@
 .bpnb_borg .item-create-select {
   padding: 4px 8px;
   border: 1px solid #c9c7b8;
-  background: #f5f5f0;
+  background: #eeede0;
   color: #191813;
   font-family: inherit;
   font-size: 12px;
@@ -775,10 +775,10 @@
 }
 
 .bpnb_borg .item-create-select:hover {
-  background: #eeede0;
+  background: #e0dfd0;
 }
 
 .bpnb_borg .item-create-select:focus {
   outline: 1px solid #8b5a2b;
-  background: #f5f5f0;
+  background: #eeede0;
 }
