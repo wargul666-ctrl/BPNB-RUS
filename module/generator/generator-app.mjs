@@ -256,8 +256,8 @@ export class BpnbGeneratorApp extends FormApplication {
     const baseGearItems = [
       {
         name: 'Мешок',
-        type: 'item',
-        system: { description: 'Обычный холщовый мешок', quantity: 1 }
+        type: 'container',
+        system: { description: 'Обычный холщовый мешок', quantity: 1, gp: 3, capacity: 10, carryWeight: 0, containerSpace: 1, items: [], equipped: false }
       },
       {
         name: 'Вода и провизия на 3 дня',
