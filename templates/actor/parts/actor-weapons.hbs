@@ -7,10 +7,10 @@
     <div class="item-prop">{{localize "BPNB_BORG.Item.Weapon.Ammo"}}</div>
     <div class="item-quantity">Кол-во</div>
     <div class="item-controls">
-      <a class="item-control item-create" title="{{localize 'DOCUMENT.Create' type=(localize 'BPNB_BORG.Item.Weapon.Weapon')}}"
-         data-type="weapon">
-        <i class="fas fa-plus"></i> {{localize "BPNB_BORG.Item.Weapon.New"}}
-      </a>
+      <select class="item-create-select" title="Добавить новое оружие">
+        <option value="">+ Добавить</option>
+        <option value="weapon">Оружие</option>
+      </select>
     </div>
   </li>
 

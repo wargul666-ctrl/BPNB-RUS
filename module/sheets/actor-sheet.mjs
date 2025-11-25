@@ -229,13 +229,20 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
       const itemType = $(ev.currentTarget).val();
       if (!itemType) return; // Если выбран пустой вариант - ничего не делаем
       
+      // Определяем имя в зависимости от типа
+      let name = 'Новый предмет';
+      if (itemType === 'container') name = 'Новый контейнер';
+      if (itemType === 'weapon') name = 'Новое оружие';
+      if (itemType === 'armour') name = 'Новая броня';
+
       // Создаём предмет нужного типа
       const itemData = {
-        name: itemType === 'container' ? 'Новый контейнер' : 'Новый предмет',
+        name: name,
         type: itemType,
         system: {}
       };
 
+      // Инициализируем систему в зависимости от типа
       if (itemType === 'container') {
         itemData.system = {
           capacity: 10,
@@ -246,6 +253,24 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
       } else if (itemType === 'item') {
         itemData.system = {
           quantity: 1,
+          containerSpace: 1
+        };
+      } else if (itemType === 'weapon') {
+        itemData.system = {
+          damage: '1d6',
+          ranged: false,
+          two_handed: false,
+          needs_ammo: false,
+          ammunition: '0',
+          quantity: 1,
+          equipped: false,
+          containerSpace: 1
+        };
+      } else if (itemType === 'armour') {
+        itemData.system = {
+          level: 1,
+          dice: 'd2',
+          equipped: false,
           containerSpace: 1
         };
       }

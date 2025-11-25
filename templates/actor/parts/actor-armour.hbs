@@ -5,11 +5,10 @@
       <div class="item-prop">{{localize "BPNB_BORG.Item.Armour.Tier"}}</div>
       <div class="item-prop">{{localize "BPNB_BORG.Item.Armour.Dice"}}</div>
       <div class="item-controls">
-        <a class="item-control item-create"
-           title="{{localize 'BPNB_BORG.AddArmour'}}"
-           data-type="armour">
-          <i class="fas fa-plus"></i> {{localize "BPNB_BORG.AddArmour"}}
-        </a>
+        <select class="item-create-select" title="Добавить новую броню">
+          <option value="">+ Добавить</option>
+          <option value="armour">Броня</option>
+        </select>
       </div>
     </li>
 
