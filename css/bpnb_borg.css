@@ -785,3 +785,7 @@
   outline: 1px solid #8b5a2b;
   background: rgba(0, 0, 0, 0.05);
 }
+
+.bpnb_borg .item-create-select option:disabled {
+  display: none;
+}
