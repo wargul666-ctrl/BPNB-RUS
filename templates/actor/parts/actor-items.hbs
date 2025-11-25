@@ -47,7 +47,7 @@
 
       {{!-- КОНТЕЙНЕРЫ --}}
       {{#if (eq item.type "container")}}
-      <li class="item flexrow container-item" data-item-id="{{item._id}}">
+      <li class="item flexrow container-item" data-item-id="{{item._id}}" data-droppable="true">
         <div class="item-name">
           <button type="button" class="container-toggle" data-item-id="{{item._id}}" title="Раскрыть/свернуть">
             <i class="fas fa-chevron-right"></i>

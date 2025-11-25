@@ -628,6 +628,11 @@
   font-weight: bold;
 }
 
+.container-item.drag-over {
+  background-color: rgba(76, 175, 80, 0.1);
+  border: 2px dashed #4caf50;
+}
+
 .container-item .container-toggle {
   background: none;
   border: none;

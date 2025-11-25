@@ -208,9 +208,22 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     html.on('click', '.item-create', this._onItemCreate.bind(this));
 
     // УДАЛИТЬ ПРЕДМЕТ
-    html.on('click', '.item-delete', (ev) => {
+    html.on('click', '.item-delete', async (ev) => {
       const itemId = $(ev.currentTarget).parents('.item').data('itemId');
-      this.actor.items.get(itemId)?.delete();
+      const item = this.actor.items.get(itemId);
+      if (!item) return;
+
+      // Если предмет в контейнере - удалить из контейнера
+      const container = this.actor.items.find(c => 
+        c.type === 'container' && (c.system.items || []).includes(itemId)
+      );
+      
+      if (container) {
+        await container.removeItem(itemId);
+        ui.notifications.info(`${item.name} извлечено из ${container.name}`);
+      }
+      
+      await item.delete();
     });
 
     // ПЕРЕКЛЮЧИТЬ ЭКИПИРОВКУ
@@ -271,7 +284,7 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     // БРОСОК ПО ХАРАКТЕРИСТИКЕ ИЛИ ПРЕДМЕТУ
     html.on('click', '.rollable', this._onRoll.bind(this));
 
-    // ДРАГ-Н-ДРОП ДЛЯ МАКРОСОВ
+    // ДРАГ-Н-ДРОП ДЛЯ МАКРОСОВ И ПЕРЕМЕЩЕНИЯ В КОНТЕЙНЕРЫ
     if (this.actor.isOwner) {
       const handler = (ev) => this._onDragStart(ev);
       html.find('li.item').each((i, li) => {
@@ -279,7 +292,68 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
         li.setAttribute('draggable', true);
         li.addEventListener('dragstart', handler, false);
       });
+
+      // Drag-over для контейнеров
+      html.on('dragover', '[data-droppable="true"]', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        $(ev.currentTarget).addClass('drag-over');
+      });
+
+      // Drag-leave для контейнеров
+      html.on('dragleave', '[data-droppable="true"]', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        $(ev.currentTarget).removeClass('drag-over');
+      });
+
+      // Drop в контейнер
+      html.on('drop', '[data-droppable="true"]', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        $(ev.currentTarget).removeClass('drag-over');
+        
+        const containerId = $(ev.currentTarget).data('itemId');
+        const dragData = ev.dataTransfer.getData('text/plain');
+        
+        try {
+          const data = JSON.parse(dragData);
+          if (data.type === 'Item' && data.uuid) {
+            this._handleDropItem(containerId, data.uuid);
+          }
+        } catch (e) {
+          console.error('Ошибка при drop:', e);
+        }
+      });
     }
+  }
+
+  /**
+   * Обработать drop предмета в контейнер
+   */
+  async _handleDropItem(containerId, itemUuid) {
+    const container = this.actor.items.get(containerId);
+    if (!container || container.type !== 'container') return;
+
+    // Извлекаем ID предмета из UUID
+    const itemId = itemUuid.split('.').pop();
+    const item = this.actor.items.get(itemId);
+    
+    if (!item || item.id === containerId) {
+      ui.notifications.warn('Не удалось переместить предмет в контейнер');
+      return;
+    }
+
+    // Проверяем место в контейнере
+    const currentSpace = (container.system.totalContainerSpace || 0) + (item.system.containerSpace || 1);
+    if (currentSpace > (container.system.capacity || 10)) {
+      ui.notifications.warn(`${container.name} переполнен! Нет места для ${item.name}`);
+      return;
+    }
+
+    // Добавляем предмет в контейнер
+    await container.addItem(item.id);
+    ui.notifications.info(`${item.name} добавлено в ${container.name}`);
   }
 
   /* ============================================= */
