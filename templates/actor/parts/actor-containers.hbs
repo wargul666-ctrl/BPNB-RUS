@@ -1,0 +1,72 @@
+﻿{{!-- СПИСОК КОНТЕЙНЕРОВ --}}
+<div class="equipment-section">
+  <h3>{{localize "BPNB_BORG.Labels.Containers"}}</h3>
+  
+  <ol class="items-list equipment-list">
+    {{!-- ЗАГОЛОВОК --}}
+    <li class="items-header flexrow">
+      <div class="item-controls">
+        <a class="item-control item-create" title="{{localize 'BPNB_BORG.Container.Add'}}" data-type="container">
+          {{localize "BPNB_BORG.Container.Add"}} <i class="fas fa-plus"></i>
+        </a>
+      </div>
+    </li>
+
+    {{!-- КОНТЕЙНЕРЫ --}}
+    {{#each containers as |container|}}
+      <li class="item flexrow container-item item-type-container" data-item-id="{{container._id}}">
+        <img src="{{container.img}}" title="{{container.name}}" width="24" height="24" alt=""/>
+        <h4 class="item-name item-edit rollable">
+          {{container.name}}
+          {{#if (gt container.system.totalContainerSpace 0)}}
+            ({{container.system.totalContainerSpace}}/{{container.system.capacity}})
+          {{/if}}
+        </h4>
+        
+        {{!-- КОНТРОЛЫ --}}
+        <div class="item-controls">
+          <a class="item-control item-equipped-toggle {{#if container.system.equipped}}equipped{{/if}}" 
+             data-item-id="{{container._id}}" 
+             title="{{#if container.system.equipped}}Экипирован{{else}}Не экипирован{{/if}}">
+            <i class="fas fa-shield-alt"></i>
+          </a>
+          <a class="item-control item-edit" title="{{localize 'BPNB_BORG.Labels.Edit'}}">
+            <i class="fas fa-edit"></i>
+          </a>
+          <a class="item-control item-delete" title="{{localize 'BPNB_BORG.Labels.Delete'}}">
+            <i class="fas fa-trash"></i>
+          </a>
+        </div>
+      </li>
+
+      {{!-- ВЛОЖЕННЫЕ ПРЕДМЕТЫ КОНТЕЙНЕРА --}}
+      {{#if container.itemsData}}
+        {{#each container.itemsData as |item|}}
+          <li class="item flexrow nested-item item-container-item" data-item-id="{{item._id}}">
+            <img src="{{item.img}}" title="{{item.name}}" width="20" height="20" alt=""/>
+            <h4 class="item-name item-edit rollable">{{item.name}}</h4>
+            
+            {{#if (gt item.system.quantity 1)}}
+              <span class="item-prop">({{item.system.quantity}})</span>
+            {{/if}}
+            
+            <div class="item-controls">
+              <a class="item-control item-edit" title="{{localize 'BPNB_BORG.Labels.Edit'}}">
+                <i class="fas fa-edit"></i>
+              </a>
+              <a class="item-control item-delete" title="{{localize 'BPNB_BORG.Labels.Delete'}}">
+                <i class="fas fa-trash"></i>
+              </a>
+            </div>
+          </li>
+        {{/each}}
+      {{/if}}
+    {{/each}}
+
+    {{#unless containers}}
+      <li class="item empty-container">
+        <div class="rule-text">{{localize 'BPNB_BORG.Container.Empty'}}</div>
+      </li>
+    {{/unless}}
+  </ol>
+</div>

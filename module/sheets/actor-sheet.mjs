@@ -86,6 +86,7 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     const spells = [];
     const weapons = [];
     const armour = [];
+    const containers = [];
 
     for (let i of context.items) {
       i.img = i.img || Item.DEFAULT_ICON;
@@ -95,6 +96,24 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
       else if (i.type === 'spell') spells.push(i);
       else if (i.type === 'weapon') weapons.push(i);
       else if (i.type === 'armour') armour.push(i);
+      else if (i.type === 'container') {
+        // Загружаем вложенные предметы контейнера через массив items в system
+        if (i.system.items && i.system.items.length > 0) {
+          const containerItems = i.system.items.map(itemId => {
+            const item = context.items.find(item => item._id === itemId);
+            return item;
+          }).filter(item => !!item);
+          i.itemsData = containerItems;
+          // Рассчитываем текущий вес содержимого
+          i.system.totalContainerSpace = containerItems.reduce((sum, item) => {
+            return sum + ((item.system.containerSpace || 1) * (item.system.quantity || 1));
+          }, 0);
+        } else {
+          i.itemsData = [];
+          i.system.totalContainerSpace = 0;
+        }
+        containers.push(i);
+      }
     }
 
     context.gear = gear;
@@ -102,6 +121,7 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     context.spells = spells;
     context.weapons = weapons;
     context.armour = armour;
+    context.containers = containers || [];
   }
 
   /* ============================================= */
@@ -158,6 +178,22 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
       const item = this.actor.items.get(itemId);
       const value = parseInt(ev.currentTarget.value);
       if (!isNaN(value)) item.update({ "system.ammunition": value });
+    });
+
+    // РАЗВЕРНУТЬ/СВЕРНУТЬ КОНТЕЙНЕР
+    html.on('click', '.container-toggle', (ev) => {
+      ev.preventDefault();
+      const containerId = $(ev.currentTarget).data('itemId');
+      const contentsRow = html.find(`[data-container-id="${containerId}"]`);
+      const icon = $(ev.currentTarget).find('i');
+      
+      if (contentsRow.is(':visible')) {
+        contentsRow.slideUp(200);
+        icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+      } else {
+        contentsRow.slideDown(200);
+        icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+      }
     });
 
     // === ТОЛЬКО ЕСЛИ ЛИСТ РЕДАКТИРУЕМЫЙ ===
@@ -293,5 +329,36 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     else if (dataset.roll) {
       attackRollDialog(this.actor, null, dataset.roll, dataset.label);
     }
+  }
+
+  /* ============================================= */
+  // DRAG-DROP: перемещение предметов в контейнеры
+  async _onDrop(event) {
+    let data;
+    try {
+      data = JSON.parse(event.dataTransfer.getData('text/plain'));
+    } catch (err) {
+      return super._onDrop(event);
+    }
+
+    // Если это перемещение предмета из инвентаря
+    if (data.type === 'Item') {
+      const targetElement = event.target.closest('.container-item');
+      
+      if (targetElement) {
+        const containerId = targetElement.dataset.itemId;
+        const container = this.actor.items.get(containerId);
+        const draggedItemId = data.uuid.split('.').pop();
+        
+        if (container && container.type === 'container') {
+          // Добавляем предмет в контейнер
+          await container.addItem(draggedItemId);
+          ui.notifications.info(`${this.actor.items.get(draggedItemId)?.name} добавлено в ${container.name}`);
+          return false;
+        }
+      }
+    }
+
+    return super._onDrop(event);
   }
 }

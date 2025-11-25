@@ -54,7 +54,7 @@
     }
   },
   "Item": {
-    "types": ["item", "feature", "spell", "weapon", "armour"],
+    "types": ["item", "feature", "spell", "weapon", "armour", "container"],
     "templates": {
       "base": {
         "description": "",
@@ -101,6 +101,19 @@
       "equipped": false,
       "sheet": {
         "template": "systems/bpnb-borg-ru/templates/item/item-armour-sheet.hbs"
+      }
+    },
+    "container": {
+      "templates": ["base"],
+      "capacity": 10,
+      "weight": 0,
+      "carryWeight": 0,
+      "containerSpace": 1,
+      "quantity": 1,
+      "equipped": false,
+      "items": [],
+      "sheet": {
+        "template": "systems/bpnb-borg-ru/templates/item/item-container-sheet.hbs"
       }
     }
   }

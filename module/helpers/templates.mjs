@@ -11,6 +11,7 @@ export async function preloadHandlebarsTemplates() {
     `${base}/actor/actor-npc-sheet.hbs`,
     `${base}/item/item-weapon-sheet.hbs`,
     `${base}/item/item-armour-sheet.hbs`,
+    `${base}/item/item-container-sheet.hbs`,
     `${base}/item/item-item-sheet.hbs`,
     `${base}/item/item-feature-sheet.hbs`,
     `${base}/item/item-spell-sheet.hbs`,
@@ -27,6 +28,7 @@ export async function preloadHandlebarsTemplates() {
     "bpnb-borg-ru.features": `${base}/actor/parts/actor-features.hbs`,
     "bpnb-borg-ru.weapons": `${base}/actor/parts/actor-weapons.hbs`,
     "bpnb-borg-ru.armour": `${base}/actor/parts/actor-armour.hbs`,
+    "bpnb-borg-ru.containers": `${base}/actor/parts/actor-containers.hbs`,
     "bpnb-borg-ru.items": `${base}/actor/parts/actor-items.hbs`,
     "bpnb-borg-ru.spells": `${base}/actor/parts/actor-spells.hbs`,
     "bpnb-borg-ru.effects": `${base}/actor/parts/actor-effects.hbs`

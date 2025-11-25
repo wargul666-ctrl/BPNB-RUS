@@ -1,0 +1,49 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <div class="header-fields">
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'BPNB_BORG.Container.Name'}}" /></h1>
+      <div class="quantity-controls">
+        <button type="button" class="quantity-btn" data-action="decrease-quantity" title="Уменьшить количество">−</button>
+        <input type="number" name="system.quantity" class="quantity-input" value="{{system.quantity}}" min="1" data-dtype="Number" />
+        <button type="button" class="quantity-btn" data-action="increase-quantity" title="Увеличить количество">+</button>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="grid grid-2col">
+      <div class="resource">
+        <label class="resource-label">{{localize "BPNB_BORG.Container.Capacity"}}</label>
+        <input type="number" name="system.capacity" value="{{system.capacity}}" data-dtype="Number" />
+      </div>
+      <div class="resource">
+        <label class="resource-label">{{localize "BPNB_BORG.Item.Weight"}}</label>
+        <input type="number" name="system.carryWeight" value="{{system.carryWeight}}" data-dtype="Number" />
+      </div>
+    </div>
+    <div class="grid grid-2col">
+      <div class="resource">
+        <label class="resource-label">{{localize "BPNB_BORG.Container.ContainerItems"}}</label>
+        <input type="number" name="system.containerSpace" value="{{system.containerSpace}}" data-dtype="Number" />
+      </div>
+      <div class="resource">
+        <label class="resource-label">{{localize "BPNB_BORG.Item.GP"}}</label>
+        <input type="text" name="system.gp" value="{{system.gp}}" data-dtype="Number" />
+      </div>
+    </div>
+  </section>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">{{localize "BPNB_BORG.Item.Description"}}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{editor system.description target="system.description" rollData=rollData button=true owner=owner editable=editable}}
+    </div>
+  </section>
+</form>

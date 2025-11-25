@@ -181,4 +181,51 @@ export class Bpnb_borgItem extends Item {
   async unequip() {
     await this.update({ "system.equipped": false });
   }
+
+  /**
+   * Добавить предмет в контейнер
+   * @param {string} itemId - ID предмета для добавления
+   */
+  async addItem(itemId) {
+    if (this.type !== 'container') return;
+    
+    const items = this.system.items || [];
+    if (!items.includes(itemId)) {
+      await this.update({ "system.items": [...items, itemId] });
+    }
+  }
+
+  /**
+   * Удалить предмет из контейнера
+   * @param {string} itemId - ID предмета для удаления
+   */
+  async removeItem(itemId) {
+    if (this.type !== 'container') return;
+    
+    const items = this.system.items || [];
+    const filtered = items.filter(id => id !== itemId);
+    await this.update({ "system.items": filtered });
+  }
+
+  /**
+   * Получить все предметы в контейнере
+   */
+  getContainerItems() {
+    if (this.type !== 'container' || !this.actor) return [];
+    
+    const itemIds = this.system.items || [];
+    return itemIds.map(id => this.actor.items.get(id)).filter(item => !!item);
+  }
+
+  /**
+   * Получить контейнер, в котором находится этот предмет
+   */
+  getContainer() {
+    if (!this.actor) return null;
+    
+    return this.actor.items.find(item => 
+      item.type === 'container' && 
+      (item.system.items || []).includes(this.id)
+    );
+  }
 }
