@@ -87,19 +87,36 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     const weapons = [];
     const armour = [];
 
+    // Сначала найдем все предметы которые находятся в контейнерах
+    const itemsInContainers = new Set();
+    for (let i of context.items) {
+      if (i.type === 'container' && i.system.items && i.system.items.length > 0) {
+        i.system.items.forEach(itemId => itemsInContainers.add(itemId));
+      }
+    }
+
     for (let i of context.items) {
       i.img = i.img || Item.DEFAULT_ICON;
 
       if (i.type === 'item') {
-        gear.push(i);
+        // Не добавляем если предмет уже в контейнере
+        if (!itemsInContainers.has(i._id)) {
+          gear.push(i);
+        }
       } else if (i.type === 'feature') {
         features.push(i);
       } else if (i.type === 'spell') {
         spells.push(i);
       } else if (i.type === 'weapon') {
-        weapons.push(i);
+        // Оружие тоже может быть в контейнере
+        if (!itemsInContainers.has(i._id)) {
+          weapons.push(i);
+        }
       } else if (i.type === 'armour') {
-        armour.push(i);
+        // Броня тоже может быть в контейнере
+        if (!itemsInContainers.has(i._id)) {
+          armour.push(i);
+        }
       } else if (i.type === 'container') {
         // Контейнеры тоже добавляем в gear как предметы
         // Загружаем вложенные предметы контейнера через массив items в system
@@ -206,6 +223,24 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     // ДОБАВИТЬ ПРЕДМЕТ
     html.on('click', '.item-create', this._onItemCreate.bind(this));
+
+    // ИЗВЛЕЧЬ ПРЕДМЕТ ИЗ КОНТЕЙНЕРА
+    html.on('click', '.item-extract', async (ev) => {
+      ev.preventDefault();
+      const itemId = $(ev.currentTarget).parents('.nested-item').data('itemId');
+      const item = this.actor.items.get(itemId);
+      if (!item) return;
+
+      // Найти контейнер который содержит этот предмет
+      const container = this.actor.items.find(c => 
+        c.type === 'container' && (c.system.items || []).includes(itemId)
+      );
+      
+      if (container) {
+        await container.removeItem(itemId);
+        ui.notifications.info(`${item.name} извлечено из ${container.name}`);
+      }
+    });
 
     // УДАЛИТЬ ПРЕДМЕТ
     html.on('click', '.item-delete', async (ev) => {
