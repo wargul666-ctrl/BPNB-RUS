@@ -2,10 +2,8 @@
   <ol class="item-list">
     <li class="item flexrow items-header">
       <div class="item-name">{{localize "BPNB_BORG.Item.Name"}}</div>
-      <div class="item-formula"></div>
       <div class="item-prop">{{localize "BPNB_BORG.Item.Armour.Tier"}}</div>
       <div class="item-prop">{{localize "BPNB_BORG.Item.Armour.Dice"}}</div>
-      <div class="item-quantity"></div>
       <div class="item-controls">
         <a class="item-control item-create"
            title="{{localize 'BPNB_BORG.AddArmour'}}"
@@ -25,7 +23,6 @@
       </div>
       <div class="item-prop"><strong>{{item.system.level}}</strong></div>
       <div class="item-prop"><strong>{{item.system.dice}}</strong></div>
-      <div class="item-quantity"></div>
       <div class="item-controls">
         <a class="item-control item-equipped-toggle {{#if item.system.equipped}}equipped{{/if}}" data-action="toggle-equipped" data-item-id="{{item._id}}" title="{{#if item.system.equipped}}Экипирована{{else}}Не экипирована{{/if}}">
           <i class="fas fa-shield-alt"></i>
