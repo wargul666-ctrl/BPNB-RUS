@@ -86,17 +86,22 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     const spells = [];
     const weapons = [];
     const armour = [];
-    const containers = [];
 
     for (let i of context.items) {
       i.img = i.img || Item.DEFAULT_ICON;
 
-      if (i.type === 'item') gear.push(i);
-      else if (i.type === 'feature') features.push(i);
-      else if (i.type === 'spell') spells.push(i);
-      else if (i.type === 'weapon') weapons.push(i);
-      else if (i.type === 'armour') armour.push(i);
-      else if (i.type === 'container') {
+      if (i.type === 'item') {
+        gear.push(i);
+      } else if (i.type === 'feature') {
+        features.push(i);
+      } else if (i.type === 'spell') {
+        spells.push(i);
+      } else if (i.type === 'weapon') {
+        weapons.push(i);
+      } else if (i.type === 'armour') {
+        armour.push(i);
+      } else if (i.type === 'container') {
+        // Контейнеры тоже добавляем в gear как предметы
         // Загружаем вложенные предметы контейнера через массив items в system
         if (i.system.items && i.system.items.length > 0) {
           const containerItems = i.system.items.map(itemId => {
@@ -112,7 +117,7 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
           i.itemsData = [];
           i.system.totalContainerSpace = 0;
         }
-        containers.push(i);
+        gear.push(i);
       }
     }
 
@@ -121,7 +126,6 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     context.spells = spells;
     context.weapons = weapons;
     context.armour = armour;
-    context.containers = containers || [];
   }
 
   /* ============================================= */
@@ -183,15 +187,16 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     // РАЗВЕРНУТЬ/СВЕРНУТЬ КОНТЕЙНЕР
     html.on('click', '.container-toggle', (ev) => {
       ev.preventDefault();
-      const containerId = $(ev.currentTarget).data('itemId');
-      const contentsRow = html.find(`[data-container-id="${containerId}"]`);
-      const icon = $(ev.currentTarget).find('i');
+      const button = $(ev.currentTarget);
+      const containerRow = button.closest('.container-item');
+      const nestedItems = containerRow.nextAll('.nested-item');
+      const icon = button.find('i');
       
-      if (contentsRow.is(':visible')) {
-        contentsRow.slideUp(200);
+      if (nestedItems.first().is(':visible')) {
+        nestedItems.slideUp(200);
         icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
       } else {
-        contentsRow.slideDown(200);
+        nestedItems.slideDown(200);
         icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
       }
     });
