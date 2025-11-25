@@ -363,7 +363,7 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     const header = event.currentTarget;
     const type = header.dataset.type;
     const name = game.i18n.localize("DOCUMENT.New").replace("{type}", game.i18n.localize(`TYPES.Item.${type}`));
-    const itemData = { name, type, system: duplicate(header.dataset) };
+    const itemData = { name, type, system: foundry.utils.duplicate(header.dataset) };
     delete itemData.system.type;
     return await Item.create(itemData, { parent: this.actor });
   }
