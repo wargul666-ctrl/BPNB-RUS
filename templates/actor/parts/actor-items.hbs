@@ -2,7 +2,10 @@
   <ol class="item-list">
     <li class="item flexrow items-header">
       <div class="item-name">{{localize "BPNB_BORG.Item.Name"}}</div>
+      <div class="item-formula"></div>
+      <div class="item-prop"></div>
       <div class="item-prop">{{localize "BPNB_BORG.Item.Quantity"}}</div>
+      <div class="item-quantity"></div>
       <div class="item-controls">
         <a class="item-control item-create"
            title="{{localize 'BPNB_BORG.AddContainer'}}"
@@ -26,6 +29,8 @@
           </div>
           <h4 class="rollable" data-item-id="{{item._id}}">{{item.name}}</h4>
         </div>
+        <div class="item-formula"></div>
+        <div class="item-prop"></div>
         <div class="item-prop">
           <input type="number"
                  name="system.quantity"
@@ -34,6 +39,7 @@
                  class="inline-edit"
                  style="width: 50px; text-align: center;"/>
         </div>
+        <div class="item-quantity"></div>
         <div class="item-controls">
           <a class="item-control item-edit" title="{{localize 'BPNB_BORG.Edit'}}">
             <i class="fas fa-edit"></i>
