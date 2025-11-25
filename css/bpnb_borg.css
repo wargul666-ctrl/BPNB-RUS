@@ -328,7 +328,7 @@
 }
 .bpnb_borg .items-list .item-name {
   flex: 1 1 auto;
-  min-width: 0;
+  min-width: 300px;
   margin: 0;
   overflow: hidden;
   font-size: 13px;
@@ -405,7 +405,7 @@
 }
 .bpnb_borg .items-list .items-header .item-name {
   flex: 1 1 auto;
-  min-width: 0;
+  min-width: 300px;
   text-align: left;
   padding: 2px 5px;
   display: flex;
