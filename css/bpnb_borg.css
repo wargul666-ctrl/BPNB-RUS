@@ -386,12 +386,15 @@
 }
 .bpnb_borg .items-list .items-header {
   min-height: 28px;
-  margin: 2px 0;
-  padding: 2px 0;
+  margin: 0;
+  padding: 0;
   align-items: center;
   background: rgba(0, 0, 0, 0.05);
   border: 2px groove #eeede0;
   font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
 }
 .bpnb_borg .items-list .items-header > * {
   font-size: 12px;
@@ -401,18 +404,37 @@
   white-space: nowrap;
 }
 .bpnb_borg .items-list .items-header .item-name {
-  padding-left: 5px;
+  flex: 1 1 auto;
+  min-width: 0;
   text-align: left;
-  flex: 1;
-  min-width: 200px;
+  padding: 2px 5px;
+  display: flex;
+  align-items: center;
 }
 .bpnb_borg .items-list .items-header .item-prop {
-  flex: 0 0 80px;
+  flex: 0 0 85px;
+  min-width: 85px;
+  max-width: 85px;
+  padding: 2px 5px;
 }
 .bpnb_borg .items-list .items-header .item-controls {
   display: flex;
   gap: 5px;
   align-items: center;
+}
+.bpnb_borg .items-list .items-header .item-formula {
+  flex: 0 0 220px;
+  min-width: 220px;
+  max-width: 220px;
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+.bpnb_borg .items-list .items-header .item-quantity {
+  flex: 0 0 65px;
+  min-width: 65px;
+  max-width: 65px;
+  padding: 2px 5px;
+  white-space: nowrap;
 }
 .bpnb_borg .item-formula {
   flex: 0 0 220px;
