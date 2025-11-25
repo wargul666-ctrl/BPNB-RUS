@@ -421,6 +421,8 @@
   display: flex;
   gap: 5px;
   align-items: center;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 .bpnb_borg .items-list .items-header .item-formula {
   flex: 0 0 220px;
