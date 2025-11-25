@@ -4,16 +4,11 @@
       <div class="item-name">{{localize "BPNB_BORG.Item.Name"}}</div>
       <div class="item-prop">{{localize "BPNB_BORG.Item.Quantity"}}</div>
       <div class="item-controls">
-        <a class="item-control item-create"
-           title="{{localize 'BPNB_BORG.AddContainer'}}"
-           data-type="container">
-          <i class="fas fa-plus"></i> {{localize "BPNB_BORG.AddContainer"}}
-        </a>
-        <a class="item-control item-create"
-           title="{{localize 'BPNB_BORG.AddItem'}}"
-           data-type="item">
-          <i class="fas fa-plus"></i> {{localize "BPNB_BORG.AddItem"}}
-        </a>
+        <select class="item-create-select" title="Выберите тип предмета для добавления">
+          <option value="">+ Добавить</option>
+          <option value="container">Контейнер</option>
+          <option value="item">Предмет</option>
+        </select>
       </div>
     </li>
 

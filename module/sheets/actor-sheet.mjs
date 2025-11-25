@@ -224,6 +224,38 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
     // ДОБАВИТЬ ПРЕДМЕТ
     html.on('click', '.item-create', this._onItemCreate.bind(this));
 
+    // ВЫПАДАЮЩИЙ СПИСОК ДЛЯ ДОБАВЛЕНИЯ ПРЕДМЕТА
+    html.on('change', '.item-create-select', async (ev) => {
+      const itemType = $(ev.currentTarget).val();
+      if (!itemType) return; // Если выбран пустой вариант - ничего не делаем
+      
+      // Создаём предмет нужного типа
+      const itemData = {
+        name: itemType === 'container' ? 'Новый контейнер' : 'Новый предмет',
+        type: itemType,
+        system: {}
+      };
+
+      if (itemType === 'container') {
+        itemData.system = {
+          capacity: 10,
+          carryWeight: 0,
+          containerSpace: 1,
+          items: []
+        };
+      } else if (itemType === 'item') {
+        itemData.system = {
+          quantity: 1,
+          containerSpace: 1
+        };
+      }
+
+      await this.actor.createEmbeddedDocuments('Item', [itemData]);
+      
+      // Сбрасываем select на пустое значение
+      $(ev.currentTarget).val('');
+    });
+
     // УДАЛИТЬ ПРЕДМЕТ
     html.on('click', '.item-delete', async (ev) => {
       const itemId = $(ev.currentTarget).parents('.item').data('itemId');
