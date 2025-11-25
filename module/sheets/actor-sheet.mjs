@@ -315,16 +315,20 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
         
         try {
           const containerId = $(ev.currentTarget).data('itemId');
+          console.log('BPNB-RU | Drop event triggered on container:', containerId);
           
           // Пробуем получить данные из dataTransfer
           let draggedData = null;
           
           if (ev.dataTransfer && ev.dataTransfer.getData) {
+            console.log('BPNB-RU | dataTransfer exists');
             // Пробуем text/plain
             try {
               const dragText = ev.dataTransfer.getData('text/plain');
+              console.log('BPNB-RU | dragText:', dragText);
               if (dragText && dragText.trim()) {
                 draggedData = JSON.parse(dragText);
+                console.log('BPNB-RU | Parsed dragText:', draggedData);
               }
             } catch (e) {
               // Не JSON, пропускаем
@@ -334,21 +338,30 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
             if (!draggedData) {
               try {
                 const dragJson = ev.dataTransfer.getData('application/json');
+                console.log('BPNB-RU | dragJson:', dragJson);
                 if (dragJson && dragJson.trim()) {
                   draggedData = JSON.parse(dragJson);
+                  console.log('BPNB-RU | Parsed dragJson:', draggedData);
                 }
               } catch (e) {
                 // Не JSON, пропускаем
               }
             }
+          } else {
+            console.warn('BPNB-RU | No dataTransfer available');
           }
+          
+          console.log('BPNB-RU | Final draggedData:', draggedData);
           
           // Если получили данные с UUID и это Item
           if (draggedData && draggedData.type === 'Item' && draggedData.uuid) {
+            console.log('BPNB-RU | Calling _handleDropItem with:', containerId, draggedData.uuid);
             await this._handleDropItem(containerId, draggedData.uuid);
+          } else {
+            console.warn('BPNB-RU | Invalid draggedData or missing uuid:', draggedData);
           }
         } catch (error) {
-          console.error('Ошибка при обработке drop:', error);
+          console.error('BPNB-RU | Ошибка при обработке drop:', error);
         }
       });
     }
