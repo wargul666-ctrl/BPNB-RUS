@@ -28,6 +28,51 @@ export class Bpnb_borgActor extends Actor {
     foundry.utils.mergeObject(data.prototypeToken, defaults, { overwrite: false });
     
     const actor = await super.create(data, options);
+    
+    // Добавляем стандартные контейнеры при создании персонажа
+    if (data.type === "character" && actor.items.size === 0) {
+      const defaultContainers = [
+        {
+          name: "Мешок",
+          type: "container",
+          img: "icons/containers/bag-leather-tan.webp",
+          system: {
+            capacity: 10,
+            carryWeight: 0.5,
+            containerSpace: 1,
+            quantity: 1,
+            description: "Обычный мешок. Вмещает 10 обычных предметов. Стоит 3 золотых."
+          }
+        },
+        {
+          name: "Ранец",
+          type: "container",
+          img: "icons/containers/backpack-tan.webp",
+          system: {
+            capacity: 8,
+            carryWeight: 2,
+            containerSpace: 1,
+            quantity: 1,
+            description: "Удобный ранец. Вмещает 8 обычных предметов. Стоит 5 золотых."
+          }
+        },
+        {
+          name: "Седло с сумками",
+          type: "container",
+          img: "icons/containers/backpack-brown.webp",
+          system: {
+            capacity: 10,
+            carryWeight: 3,
+            containerSpace: 2,
+            quantity: 1,
+            description: "Седло с привязанными сумками для переноски. Вмещает 10 предметов. Стоит 10 золотых."
+          }
+        }
+      ];
+      
+      await actor.createEmbeddedDocuments("Item", defaultContainers);
+    }
+    
     return actor;
   }
 
