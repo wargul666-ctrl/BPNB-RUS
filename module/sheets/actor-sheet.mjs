@@ -308,38 +308,47 @@ export class Bpnb_borgActorSheet extends foundry.appv1.sheets.ActorSheet {
       });
 
       // Drop в контейнер
-      html.on('drop', '[data-droppable="true"]', (ev) => {
+      html.on('drop', '[data-droppable="true"]', async (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
         $(ev.currentTarget).removeClass('drag-over');
         
-        const containerId = $(ev.currentTarget).data('itemId');
-        
-        // Пробуем разные способы получить данные
-        let data = null;
         try {
-          const dragText = ev.dataTransfer.getData('text/plain');
-          if (dragText) {
-            data = JSON.parse(dragText);
-          }
-        } catch (e) {
-          console.warn('Ошибка при парсинге drag data:', e);
-        }
-        
-        // Если не получили UUID из JSON, пробуем через application/json
-        if (!data || !data.uuid) {
-          try {
-            const dragJson = ev.dataTransfer.getData('application/json');
-            if (dragJson) {
-              data = JSON.parse(dragJson);
+          const containerId = $(ev.currentTarget).data('itemId');
+          
+          // Пробуем получить данные из dataTransfer
+          let draggedData = null;
+          
+          if (ev.dataTransfer && ev.dataTransfer.getData) {
+            // Пробуем text/plain
+            try {
+              const dragText = ev.dataTransfer.getData('text/plain');
+              if (dragText && dragText.trim()) {
+                draggedData = JSON.parse(dragText);
+              }
+            } catch (e) {
+              // Не JSON, пропускаем
             }
-          } catch (e) {
-            console.warn('Ошибка при парсинге application/json:', e);
+            
+            // Если не получили, пробуем application/json
+            if (!draggedData) {
+              try {
+                const dragJson = ev.dataTransfer.getData('application/json');
+                if (dragJson && dragJson.trim()) {
+                  draggedData = JSON.parse(dragJson);
+                }
+              } catch (e) {
+                // Не JSON, пропускаем
+              }
+            }
           }
-        }
-        
-        if (data && data.type === 'Item' && data.uuid) {
-          this._handleDropItem(containerId, data.uuid);
+          
+          // Если получили данные с UUID и это Item
+          if (draggedData && draggedData.type === 'Item' && draggedData.uuid) {
+            await this._handleDropItem(containerId, draggedData.uuid);
+          }
+        } catch (error) {
+          console.error('Ошибка при обработке drop:', error);
         }
       });
     }
